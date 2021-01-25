@@ -3,7 +3,7 @@ $menuSize:275px;   //菜单列表的宽度
 $operatorSize:275px; //右侧编辑详情的宽度
 
 $ibc:#dcdfe6;   //border  color边框的颜色
-$ibl:#ebeef5;   //border  color light  边框颜色  
+$ibl:#ebeef5;   //border  color light  边框颜色
 $itc:#314659;   // text color  字体颜色
 $icc:rgba(0,0,0,0.45);  // icon color 图标颜色
 $boxShadowColor:#f0f1f2; // 阴影颜色
@@ -54,7 +54,7 @@ $primary:#409EFF; // 主色调
 				left:0;
 				content:' ';
 				z-index: 10;
-				// background: rgba(0,0,0,0.1); 
+				// background: rgba(0,0,0,0.1);
 			}
 			&:hover{
 				border-color: $primary;
@@ -98,7 +98,7 @@ $primary:#409EFF; // 主色调
 		background-color: rgba(white,.5);
 		position: relative;
 			z-index: 1;
-		
+
 		height: 100%;
 		& > .visual-editor-content{
 			height: 100%;
@@ -113,7 +113,21 @@ $primary:#409EFF; // 主色调
 				background-color: white;
 				position: relative;
 				.visual-deitor-block{
-					position: absolute;
+          position: absolute;
+          &::after{
+            position: absolute;
+            $space: 3px;
+            top:-$space;
+            left:-$space;
+            right:-$space;
+            bottom:-$space;
+            content:'';
+          }
+          &.visual-deitor-block-focus{
+            &::after{
+              border:1px dashed $primary
+            }
+          }
 				}
 			}
 		}

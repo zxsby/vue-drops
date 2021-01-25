@@ -1,11 +1,12 @@
+import {ElButton, ElInput} from 'element-plus'
+
 import { createVisualEditorConfig } from "./packages/visual-editor.utils";
-import {ElButton,ElInput} from 'element-plus'
 
 export const visualConfig = createVisualEditorConfig()
 
 visualConfig.registry('text',{
-    label:'文本',
-    preview:() => '文本',
+    label: '文本',
+    preview: () => '文本',
     render: () => '渲染',
 })
 

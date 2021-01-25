@@ -1,9 +1,23 @@
 
-  
+
 export interface VisualEditorBlockData{
-    top: number;
-    left: number;
+    componentKey: string;       // 映射 VisualEditorConfig 中componentMap 的 component对象
+    top: number;                //组件top定位
+    left: number;               //组件left定位
+    adjustPosition: boolean;    // 是否需要调整位置
+    focus: boolean;             //是否为选中状态
 }
+
+export function createNewBlock(e: DragEvent, component: VisualEditorComponent): VisualEditorBlockData {
+  return{
+    componentKey: component.key,
+    top: e.offsetY,
+    left: e.offsetX,
+    adjustPosition: true,
+    focus: false,
+  }
+}
+
 export interface VisualEditorModelValue{
     container: {
         width: number;
@@ -14,7 +28,7 @@ export interface VisualEditorModelValue{
 
 export interface VisualEditorComponent {
     key: string,
-    label: string, 
+    label: string,
     preview: () => JSX.Element,
     render: () => JSX.Element
 }
