@@ -5,6 +5,7 @@ import { VisualEditorBlockData, VisualEditorComponent, VisualEditorConfig, Visua
 
 import { VisualEditorBlock } from "./visual-editor-block";
 import { useModel } from "./utils/useModel";
+import { useVisualCommand } from './utils/visual.command';
 
 export const VisualEditor = defineComponent({
   props: {
@@ -152,6 +153,13 @@ export const VisualEditor = defineComponent({
       }
     })()
 
+    const commander = useVisualCommand()
+    //按钮数据
+    const buttons = [
+      {label: '撤销',icon: '', handler: commander.undo, tip:'ctrl+z'},
+      {label: '重做',icon: '', handler: commander.redo, tip:'ctrl+y,ctrl+shift+z'},
+      {label: '删除',icon: '', handler: () => commander.delete, tip:'ctrl+d,backspace,delete'},
+    ]
     return () => (
       <div class='visual-editor'>
         <div class='visual-editor-menu'>
@@ -171,7 +179,7 @@ export const VisualEditor = defineComponent({
         </div>
         <div class='visual-editor-head'>
           head
-                </div>
+        </div>
         <div class='visual-editor-operator'>
           operator
                 </div>
