@@ -24,6 +24,7 @@ export const VisualEditor = defineComponent({
   setup(props, ctx) {
     //双向绑定容器中的组件数据
     const dataModel = useModel(() => props.modelValue, val => ctx.emit('update:modelValue', val))
+    // console.log(dataModel)
     //containerRef节点dom对象的引用
     const containerRef = ref({} as HTMLDivElement)
     //containerRef节点的style样式对象
@@ -52,6 +53,12 @@ export const VisualEditor = defineComponent({
           blocks = blocks.filter(item => item !== block)
         }
         blocks.forEach(block=>block.focus = false)
+      },
+      updateBlocks: (blocks: VisualEditorBlockData[]) => {
+        dataModel.value = {
+          container: dataModel.value!.container,
+          blocks
+        }
       }
     }
     // 处理从菜单拖拽组件到容器的相关动作处理
@@ -86,6 +93,7 @@ export const VisualEditor = defineComponent({
         drop: (e: DragEvent) => {
           const blocks = dataModel.value?.blocks || []
           blocks.push(createNewBlock(e,component!))
+          methods.updateBlocks(blocks)
         },
       }
       return blockHandler
@@ -153,12 +161,13 @@ export const VisualEditor = defineComponent({
       }
     })()
 
-    const commander = useVisualCommand()
+    const commander = useVisualCommand({focusData, updateBlocks:methods.updateBlocks, dataModel})
+    console.log(commander,' redo()')
     //按钮数据
     const buttons = [
-      {label: '撤销',icon: '', handler: commander.undo, tip:'ctrl+z'},
-      {label: '重做',icon: '', handler: commander.redo, tip:'ctrl+y,ctrl+shift+z'},
-      {label: '删除',icon: '', handler: () => commander.delete, tip:'ctrl+d,backspace,delete'},
+      {label: '撤销',icon: 'icon-back', handler: commander.undo, tip:'ctrl+z'},
+      {label: '重做',icon: 'icon-forward', handler: commander.redo, tip:'ctrl+y,ctrl+shift+z'},
+      {label: '删除',icon: 'icon-delete', handler: commander.delete, tip:'ctrl+d,backspace,delete'},
     ]
     return () => (
       <div class='visual-editor'>
@@ -178,11 +187,17 @@ export const VisualEditor = defineComponent({
           }
         </div>
         <div class='visual-editor-head'>
-          head
+          {buttons.map((btn,index) =>(
+            // 
+            <div onClick={btn.handler} class='visual-editor-head-button' key={index}>
+              <i class={`iconfont ${btn.icon}`}></i>
+              <span>{btn.label}</span>
+            </div>
+          ))}
         </div>
         <div class='visual-editor-operator'>
           operator
-                </div>
+        </div>
         <div class='visual-editor-body'>
           <div class='visual-editor-content'>
             <div

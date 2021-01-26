@@ -1,3 +1,6 @@
+ 
+@import "./lib/iconfont/iconfont.css";
+
 $headSize:60px;     //顶部操作栏的高度
 $menuSize:275px;   //菜单列表的宽度
 $operatorSize:275px; //右侧编辑详情的宽度
@@ -73,13 +76,51 @@ $primary:#409EFF; // 主色调
 		}
 	}
 	& > .visual-editor-head{
+		padding-top:10px;
 		position: absolute;
 		top:0;
 		left:$menuSize;
 		right: $operatorSize;
 		height: $headSize;
-		background: #409EFF;
+		color: $itc;
+		// background: #409EFF;
 		z-index: 2;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		.visual-editor-head-button{
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			background: rgba(black,0.3);
+			color: white;
+			height: 60px;
+			width: 60px;
+			cursor: pointer;
+			transition: all 300ms linear;
+			& + .visual-editor-head-button{
+				margin-left: 1px;
+			}
+			&:first-child{
+				border-top-left-radius: 4px;
+				border-bottom-left-radius: 4px;
+			}
+			&:last-child{
+				border-top-right-radius: 4px;
+				border-bottom-right-radius: 4px;
+			}
+			&:hover{
+				background: white;
+				color: $primary;
+			}
+			i{
+				font-size: 20px;
+			}
+			span{
+				font-size: 12px;
+			}
+		}
 	}
 	& > .visual-editor-operator{
 		position: absolute;
@@ -91,7 +132,7 @@ $primary:#409EFF; // 主色调
 		z-index: 2;
 	}
 	& > .visual-editor-body{
-		padding-top:$headSize;
+		padding-top:$headSize+20px;
 		padding-left: $menuSize;
 		padding-right: $operatorSize;
 		box-sizing: border-box;

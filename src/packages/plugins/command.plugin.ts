@@ -14,18 +14,25 @@ export interface Command{
 
 export function useCommander() {
   const state = reactive({
-    current:1,
+    current:-1,
     queue:[] as CommandExecute[],
     commands: {} as Record<string, (...args: any[]) => void>
   })
 
   const registry = (command: Command) => {
+    // console.log(command)
     state.commands[command.name] = (...args)=>{
       const {undo, redo} =  command.execute(...args)
-      if(command.followQueue) {
+      if(command.followQueue !== false) {
+        if( state.queue.length>0){
+          console.log(state.queue.slice(0,state.current+1))
+          state.queue = state.queue.slice(0,state.current+1)
+          console.log(state.queue,state.current,'console.log(state.queue.slice(0,state.current+1))')
+        }
         state.queue.push({undo, redo})
         state.current += 1
       }
+       
       redo()
     }
   }
@@ -60,11 +67,13 @@ export function useCommander() {
     ],
     followQueue:false,
     execute: () => {
+      console.log('重做')
       return {
         redo: () => {
           let {current} = state
-          if(!state.queue[current]) return
-          const {redo} = state.queue[current]
+          console.log('state',state)
+          if(!state.queue[current + 1]) return
+          const {redo} = state.queue[current+1]
           redo()
           state.current += 1
         }
