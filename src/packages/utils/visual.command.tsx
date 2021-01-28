@@ -78,11 +78,30 @@ export function useVisualCommand(
       }
     }
   })
+  //清空
+  commander.registry({
+    name: 'clear',
+    execute: () => {
+      let data = {
+        before: deepcopy(dataModel.value!.blocks),
+        after: deepcopy([])
+      }
+      return {
+        undo: () => {
+          updateBlocks(deepcopy(data.before))
+        },
+        redo: () => {
+          updateBlocks(deepcopy(data.after))
+        }
+      }
+    }
+  })
   // console.log('commander',commander)
   commander.init()
   return {
     undo: () => commander.state.commands.undo(),
     redo: () => commander.state.commands.redo(),
     delete: () => commander.state.commands.delete(),
+    clear: () => commander.state.commands.clear(),
   }
 }

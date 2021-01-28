@@ -19,8 +19,8 @@ export default defineComponent({
       visualConfig,
       jsonData: {
         container: {
-          height: 500,
-          width: 800
+          height: 600,
+          width: 1200
         },
         blocks: [
         ]

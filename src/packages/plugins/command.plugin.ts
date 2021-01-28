@@ -1,4 +1,5 @@
 import { onUnmounted, reactive } from "vue"
+import { KeyboardCode } from "./keyboard-code"
 
 export interface CommandExecute {
   undo?: () => void;
@@ -46,14 +47,46 @@ export function useCommander() {
       state.current = current + 1;
     }
   }
+  const keyboardEvent = (() => {
+    const onKeydown = (e: KeyboardEvent) => {
+      /**
+       * 
+       */
+      if(document.activeElement !== document.body){
+        return
+      } 
+      const {keyCode, shiftKey, altKey, ctrlKey, metaKey} = e
+      let keyString: string[] = []
+      if(ctrlKey || metaKey)keyString.push('ctrl')
+      if(shiftKey)keyString.push('ctrl')
+      if(altKey)keyString.push('altKey')
+      keyString.push(KeyboardCode[keyCode])
+      const keyName = keyString.join('+')
+      state.commandArray.forEach(({keyboard, name}) => {
+        if(!keyboard) return
+        const keys = Array.isArray(keyboard) ? keyboard : [keyboard] 
+        if(keys.indexOf(keyName) > -1){
+          state.commands[name]()
+          e.preventDefault()
+          e.stopPropagation()
+        }
+      })
+    }
+    const init = () => {
+      window.addEventListener('keydown', onKeydown)
+      return () => window.removeEventListener('keydown', onKeydown)
+    }
+    return init
+  })()
 //useCommander初始化函数，负责初始化键盘监听事件，调用命令的初始化逻辑
   const init = () => {
     const onKeydown = (e: KeyboardEvent) => {
-      console.log('监听到键盘事件')
+      // console.log('监听到键盘事件')
     }
-    window.addEventListener('keydown', onKeydown)
+    // window.addEventListener('keydown', onKeydown)
     state.commandArray.forEach(command => !!command.init && state.destroyList.push(command.init()))
-    state.destroyList.push(() => window.removeEventListener('keydown', onKeydown))
+    state.destroyList.push(keyboardEvent())
+    // state.destroyList.push(() => window.removeEventListener('keydown', onKeydown))
   }
 
   // const destroy = () => {}
