@@ -1,19 +1,25 @@
-import { useCommander } from "../plugins/command.plugin";
 import { VisualEditorBlockData, VisualEditorModelValue } from "../visual-editor.utils";
+
+import deepcopy from "deepcopy";
+import { useCommander } from "../plugins/command.plugin";
 
 export function useVisualCommand(
   {
     focusData,
     updateBlocks,
-    dataModel
+    dataModel,
+    dragstart,
+    dragend
   }: {
     focusData: {
       value: {focus: VisualEditorBlockData[],unFocus: VisualEditorBlockData[]}
     },
     updateBlocks: (blocks: VisualEditorBlockData[]) => void,
-    dataModel: { 
+    dataModel: {
       value: VisualEditorModelValue | undefined
-    }
+    },
+    dragstart: { on: (cb: () => void) => void, off: (cb: () => void) => void },
+    dragend: { on: (cb: () => void) => void, off: (cb: () => void) => void },
   }
 ) {
   const commander = useCommander()
@@ -42,9 +48,41 @@ export function useVisualCommand(
       }
     }
   })
+
+  commander.registry({
+    name: 'drag',
+    init(){
+      this.data = {
+        before: null as null | VisualEditorBlockData[]
+      }
+      const handler = {
+        dragstart: () => {
+          this.data.before = deepcopy(dataModel.value!.blocks) || []
+        },
+        dragend: () =>commander.state.commands.drag()
+      }
+      dragstart.on(handler.dragstart)
+      dragend.on(handler.dragend)
+      return () => dragstart.off(handler.dragstart)
+    },
+    execute(){
+      let before = this.data.before
+      let after = deepcopy(dataModel.value!.blocks || [])
+      return {
+        redo: () => {
+          updateBlocks(deepcopy(after))
+        },
+        undo: () => {
+          updateBlocks(deepcopy(before))
+        }
+      }
+    }
+  })
+  // console.log('commander',commander)
+  commander.init()
   return {
-    undo: commander.state.commands.undo,
-    redo: commander.state.commands.redo,
-    delete: commander.state.commands.delete,
+    undo: () => commander.state.commands.undo(),
+    redo: () => commander.state.commands.redo(),
+    delete: () => commander.state.commands.delete(),
   }
 }
