@@ -6,6 +6,15 @@ export interface VisualEditorBlockData{
     left: number;               //组件left定位
     adjustPosition: boolean;    // 是否需要调整位置
     focus: boolean;             //是否为选中状态
+    zIndex: number;
+    width: number,             // 组件宽度
+    height: number,            //组件高度
+    hasResize: boolean,       //是否调整过宽度或者高度
+}
+
+export interface VisualEditorMarkLines {
+    x: {left: number, showLeft: number}[], 
+    y: {top: number, showTop: number}[]
 }
 
 export function createNewBlock(e: DragEvent, component: VisualEditorComponent): VisualEditorBlockData {
@@ -15,6 +24,10 @@ export function createNewBlock(e: DragEvent, component: VisualEditorComponent): 
     left: e.offsetX,
     adjustPosition: true,
     focus: false,
+    zIndex: 0,
+    width: 0,
+    height: 0,
+    hasResize: false
   }
 }
 

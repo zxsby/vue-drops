@@ -154,21 +154,33 @@ $primary:#409EFF; // 主色调
 				background-color: white;
 				position: relative;
 				.visual-deitor-block{
-          position: absolute;
-          &::after{
-            position: absolute;
-            $space: 3px;
-            top:-$space;
-            left:-$space;
-            right:-$space;
-            bottom:-$space;
-            content:'';
-          }
-          &.visual-deitor-block-focus{
-            &::after{
-              border:1px dashed $primary
-            }
-          }
+					position: absolute;
+					&::after{
+						position: absolute;
+						$space: 3px;
+						top:-$space;
+						left:-$space;
+						right:-$space;
+						bottom:-$space;
+						content:'';
+					}
+					&.visual-deitor-block-focus{
+						&::after{
+						border:1px dashed $primary
+						}
+					}
+				}
+				.visual-editor-mark-line-y{
+					position: absolute;
+					left:0;
+					right:0;
+					border-top: dashed 1px $primary
+				}
+				.visual-editor-mark-line-x{
+					position: absolute;
+					top:0;
+					bottom:0;
+					border-left: dashed 1px $primary
 				}
 			}
 		}

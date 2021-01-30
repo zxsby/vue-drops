@@ -16,7 +16,8 @@ export const VisualEditorBlock = defineComponent({
         const el = ref({} as HTMLDivElement)
         const styles = computed(()=>({
             top:`${props.block?.top}px`,
-            left:`${props.block?.left}px`
+            left:`${props.block?.left}px`,
+            zIndex: props.block?.zIndex,
         }))
         const classes = computed(() => [
           'visual-deitor-block',
@@ -32,6 +33,8 @@ export const VisualEditorBlock = defineComponent({
             block.top = block.top - offsetHeight / 2
             block.left = block.left - offsetWidth / 2
             block.adjustPosition = false
+            block.width = offsetWidth
+            block.height = offsetHeight
           }
         })
         return ()=>{
