@@ -1,4 +1,4 @@
-
+import { VisualEditorProps } from "./utils/visual-editor-props"
 
 export interface VisualEditorBlockData{
     componentKey: string;       // 映射 VisualEditorConfig 中componentMap 的 component对象
@@ -10,10 +10,11 @@ export interface VisualEditorBlockData{
     width: number,             // 组件宽度
     height: number,            //组件高度
     hasResize: boolean,       //是否调整过宽度或者高度
+    props: Record<string, any>,  //组件的设计属性
 }
 
 export interface VisualEditorMarkLines {
-    x: {left: number, showLeft: number}[], 
+    x: {left: number, showLeft: number}[],
     y: {top: number, showTop: number}[]
 }
 
@@ -27,7 +28,8 @@ export function createNewBlock(e: DragEvent, component: VisualEditorComponent): 
     zIndex: 0,
     width: 0,
     height: 0,
-    hasResize: false
+    hasResize: false,
+    props:{}
   }
 }
 
@@ -43,7 +45,8 @@ export interface VisualEditorComponent {
     key: string,
     label: string,
     preview: () => JSX.Element,
-    render: () => JSX.Element
+    render: () => JSX.Element,
+    props?: Record<string, VisualEditorProps>
 }
 
 export function createVisualEditorConfig() {

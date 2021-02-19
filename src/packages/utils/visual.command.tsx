@@ -174,8 +174,25 @@ commander.registry({
   }
 })
 
+commander.registry({
+  name: 'updateModelValue',
+  execute: (val: VisualEditorModelValue)=>{
+    let data = {
+      before: deepcopy(dataModel.value),
+      after: deepcopy(val)
+    }
+    return{
+      redo: () => {
+        dataModel.value = data.after
+      },
+      undo: () => {
+        dataModel.value = data.before
+      }
+    }
+  }
+})
 
-  // console.log('commander',commander)
+
   commander.init()
   return {
     undo: () => commander.state.commands.undo(),
@@ -184,6 +201,7 @@ commander.registry({
     clear: () => commander.state.commands.clear(),
     placeTop: () => commander.state.commands.placeTop(),
     placeBottom: () => commander.state.commands.placeBottom(),
-    updateBlock:  (newBlock: VisualEditorBlockData, oldBlock: VisualEditorBlockData) => commander.state.commands.updateBlock(newBlock, oldBlock), 
+    updateBlock:  (newBlock: VisualEditorBlockData, oldBlock: VisualEditorBlockData) => commander.state.commands.updateBlock(newBlock, oldBlock),
+    updateModelValue: (val: VisualEditorModelValue) => commander.state.commands.updateModelValue(val)
   }
 }

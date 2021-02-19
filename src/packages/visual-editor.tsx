@@ -1,15 +1,16 @@
 import './visual-editor.scss'
 
-import { PropType, computed, defineComponent, ref, reactive } from "vue";
-import { VisualEditorBlockData, VisualEditorComponent, VisualEditorConfig, VisualEditorModelValue, createNewBlock, VisualEditorMarkLines } from "./visual-editor.utils";
+import { $$dropdown, DropdownOption } from './utils/dropdown-service';
+import { PropType, computed, defineComponent, reactive, ref } from "vue";
+import { VisualEditorBlockData, VisualEditorComponent, VisualEditorConfig, VisualEditorMarkLines, VisualEditorModelValue, createNewBlock } from "./visual-editor.utils";
 
+import { $$dialog } from './utils/dialog-service';
+import { ElMessageBox } from 'element-plus';
 import { VisualEditorBlock } from "./visual-editor-block";
+import { VisualOperatorEditor } from './visual-editor-operator'
 import { createEvent } from "@/packages/plugins/event";
 import { useModel } from "./utils/useModel";
 import { useVisualCommand } from './utils/visual.command';
-import { $$dialog } from './utils/dialog-service';
-import { ElMessageBox } from 'element-plus';
-import { $$dropdown, DropdownOption } from './utils/dropdown-service';
 
 export const VisualEditor = defineComponent({
   props: {
@@ -81,7 +82,6 @@ export const VisualEditor = defineComponent({
         try {
           const data = JSON.parse(text || '')
           commander.updateBlock(data, block)
-          dataModel.value = data
         } catch (e) {
           console.error(e)
           ElMessageBox.alert('解析json字符串出错')
@@ -179,7 +179,7 @@ export const VisualEditor = defineComponent({
         document.addEventListener('mouseup', mouseup)
       }
       const mousemove = (e: MouseEvent) => {
-        
+
         if (!dragState.dragging) {
           dragstart.emit()
           dragState.dragging = true
@@ -214,13 +214,13 @@ export const VisualEditor = defineComponent({
             currentMark.x = showLeft
           }
         }
-        
+
         mark.x = currentMark.x
         mark.y = currentMark.y
-        
+
         let durY = moveY - startY
         let durX = moveX - startX
-        
+
         focusData.value.focus.forEach((block, index) => {
           block.top = dragState.startPos[index].top + durY
           block.left = dragState.startPos[index].left + durX
@@ -278,7 +278,6 @@ export const VisualEditor = defineComponent({
     //其它的一些事件
     const handler = {
       onContextmenuBlock: (e: MouseEvent, block: VisualEditorBlockData) => {
-        console.log(111111)
         e.preventDefault()
         $$dropdown({
           reference: e,
@@ -351,9 +350,13 @@ export const VisualEditor = defineComponent({
             </el-tooltip>
           })}
         </div>
-        <div class='visual-editor-operator'>
-          operator
-        </div>
+        <VisualOperatorEditor
+          updateBlock={commander.updateBlock}
+          updateModelValue={commander.updateModelValue}
+          block={state.selectBlock}
+          config={props.config!}
+          dataModel={dataModel}
+        />
         <div class='visual-editor-body'>
           <div class='visual-editor-content'>
             <div
@@ -378,7 +381,7 @@ export const VisualEditor = defineComponent({
                 })
               }
               {blockDraggier.mark.y !== null && (<div class='visual-editor-mark-line-y' style={{top:`${blockDraggier.mark.y}px`}}></div>) }
-              {blockDraggier.mark.x !== null && (<div class='visual-editor-mark-line-x' style={{left:`${blockDraggier.mark.x}px`}}></div>) }              
+              {blockDraggier.mark.x !== null && (<div class='visual-editor-mark-line-x' style={{left:`${blockDraggier.mark.x}px`}}></div>) }
             </div>
           </div>
         </div>
